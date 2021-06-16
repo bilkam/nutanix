@@ -1,0 +1,60 @@
+---
+- hosts: CVM
+  serial: 1
+  gather_facts: no
+  connection: local
+  vars:
+    CVM_port: 9440
+    CVM_resource_path1: "PrismGateway/services/rest/v1/upgrade/ncc/softwares/4.1.0/download"
+    CVM_resource_path2: "PrismGateway/services/rest/v1/progress_monitors?filterCriteria=status==succeded&operation=download"
+    CVM_resource_path3: "PrismGateway/services/rest/v1/genesis"
+    CVM_user: "admin"
+    CVM_pass: ""
+    body: '{"value":"{\".oid\":\"ClusterManager\",\".method\":\"ncc_upgrade\",\".kwargs\":{\"ncc_version\":\"4.1.0\"}}"}'
+
+  tasks:
+  
+  - name: NCC Software Download
+    uri:
+      url: https://{{ inventory_hostname }}:{{ CVM_port }}/{{ CVM_resource_path1 }} 
+      method: POST
+      validate_certs: no
+      use_proxy: no
+      status_code: 200
+      user: "{{ CVM_user }}"
+      password: "{{ CVM_pass }}"
+      force_basic_auth: yes
+    delegate_to: localhost
+    register: NCC_Download
+
+
+  - name: NCC Software Download progress
+    uri:
+      url: https://{{ inventory_hostname }}:{{ CVM_port }}/{{ CVM_resource_path2 }} 
+      method: GET
+      validate_certs: no
+      use_proxy: no
+      status_code: 200
+      user: "{{ CVM_user }}"
+      password: "{{ CVM_pass }}"
+      force_basic_auth: yes
+    delegate_to: localhost
+    register: progress
+    until: progress.json.entities[0].status == "succeeded"
+    retries: 5
+    delay: 4
+
+  - name: NCC upgrade 
+    uri:
+      url: https://{{ inventory_hostname }}:{{ CVM_port }}/{{ CVM_resource_path3 }} 
+      method: POST
+      validate_certs: no
+      use_proxy: no
+      status_code: 200
+      user: "{{ CVM_user }}"
+      password: "{{ CVM_pass }}"
+      force_basic_auth: yes
+      body_format: json
+      body: "{{ body }}" 
+    delegate_to: localhost  
+    register: taskupgrade
