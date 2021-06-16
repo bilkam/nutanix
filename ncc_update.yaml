@@ -3,15 +3,9 @@
   serial: 1
   gather_facts: no
   connection: local
-  vars:
-    CVM_port: 9440
-    CVM_resource_path1: "PrismGateway/services/rest/v1/upgrade/ncc/softwares/4.1.0/download"
-    CVM_resource_path2: "PrismGateway/services/rest/v1/progress_monitors?filterCriteria=status==succeded&operation=download"
-    CVM_resource_path3: "PrismGateway/services/rest/v1/genesis"
-    CVM_user: "admin"
-    CVM_pass: ""
-    body: '{"value":"{\".oid\":\"ClusterManager\",\".method\":\"ncc_upgrade\",\".kwargs\":{\"ncc_version\":\"4.1.0\"}}"}'
-
+  vars_files:
+         - "vars/cvm_vars.yml"
+         - "vars/cvm_creds.yml"
   tasks:
   
   - name: NCC Software Download
