@@ -1,1 +1,7 @@
-
+---
+# vars file for ntnx plateform    
+   CVM_port: 9440
+   CVM_resource_path1: "PrismGateway/services/rest/v1/upgrade/ncc/softwares/4.1.0/download"
+   CVM_resource_path2: "PrismGateway/services/rest/v1/progress_monitors?filterCriteria=status==succeded&operation=download"
+   CVM_resource_path3: "PrismGateway/services/rest/v1/genesis"
+   body: '{"value":"{\".oid\":\"ClusterManager\",\".method\":\"ncc_upgrade\",\".kwargs\":{\"ncc_version\":\"4.1.0\"}}"}'
