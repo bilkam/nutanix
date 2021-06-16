@@ -1,1 +1,5 @@
+---
+# vars file for veeam plateform 
+ CVM_user: "admin"
+ CVM_pass: "Your Password"
 
